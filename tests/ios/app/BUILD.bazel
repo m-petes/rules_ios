@@ -5,6 +5,7 @@ load("@bazel_skylib//rules:common_settings.bzl", "string_flag")
 load(":analysis-tests.bzl", "make_tests")
 load("@build_bazel_rules_apple//apple:resources.bzl", "apple_bundle_import")
 load("//rules/test/output:output_test.bzl", "output_test")
+load("//rules:extension.bzl", "ios_extension")
 
 apple_framework(
     name = "CppLib",
@@ -84,17 +85,28 @@ apple_framework(
     visibility = ["//visibility:public"],
 )
 
+apple_framework(
+    name = "AppLib",
+    srcs = ["App/main.m"],
+    deps = [
+        ":FW",
+        ":FW2",
+        ":OnlySources",
+    ],
+    platforms = {"ios": "10.0"},
+    swift_version = "5.1",
+    visibility = ["//visibility:public"],
+    link_dynamic = False
+)
+
 ios_application(
     name = "App",
-    srcs = ["App/main.m"],
     bundle_id = "com.example.app",
     extensions = ["//tests/ios/extensions:ExampleExtension"],
     minimum_os_version = "10.0",
     visibility = ["//visibility:public"],
     deps = [
-        ":FW",
-        ":FW2",
-        ":OnlySources",
+        ":AppLib",
     ],
 )
 

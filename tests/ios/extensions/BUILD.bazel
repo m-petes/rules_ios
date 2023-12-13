@@ -1,4 +1,15 @@
 load("//rules:extension.bzl", "ios_extension")
+load("//rules:framework.bzl", "apple_framework")
+
+apple_framework(
+    name = "ExtensionLib",
+    srcs = glob(["ExampleExtension/*.swift"]),
+    platforms = {"ios": "10.0"},
+    swift_version = "5.1",
+    visibility = ["//visibility:public"],
+    deps = ["//tests/ios/app:FW"],
+    link_dynamic = False
+)
 
 ios_extension(
     name = "ExampleExtension",
@@ -12,7 +23,7 @@ ios_extension(
     minimum_os_version = "10.0",
     visibility = ["//visibility:public"],
     deps = [
-        "//tests/ios/app:FW",
+        ":ExtensionLib",
     ],
 )
 
